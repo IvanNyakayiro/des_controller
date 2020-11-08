@@ -65,7 +65,7 @@ const char *inMessage[NUM_INPUTS] = {
 		"exit" 		//exit
 		};
 
-#define NUM_OUTPUTS 12	// where n equals the number of output messages from the FSM.
+#define NUM_OUTPUTS 13	// where n equals the number of output messages from the FSM.
 typedef enum {
 
 	ID_SCAN = 0,		// Person scanned ID
@@ -79,7 +79,8 @@ typedef enum {
 	LDUG = 8,		  //Left door unlocked by Guard
 	RDUG = 9,			//Right door unlocked by Guard
 	IE = 10,		// "Incorrect event"
-	EXITING = 11			//Exiting
+	EXITING = 11,	//Exiting
+	IDLE_MSG = 12
 
 } Output;
 
@@ -96,7 +97,8 @@ const char *outMessage[NUM_OUTPUTS] = {
 		    "Left door unlocked by Guard",
 		    "Right door unlocked by Guard",
 		    "Incorrect event",
-		    "Exiting"
+		    "Exit Display",
+			"Waiting for Person..."
 
 		};
 
@@ -116,7 +118,7 @@ struct person {
 
  struct display{
 
-int outputMessage;
+int msg;
 int person_id;
 int person_weight;
 

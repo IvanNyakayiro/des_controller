@@ -5,7 +5,7 @@
 #include <sys/netmgr.h>
 #include <string.h>
 #include <errno.h>
-#include "../../des_controller/src/des.h"
+#include "./des.h"
 /*
  * Serves as client for display
  * Serves as Server for inputs
@@ -37,6 +37,8 @@ void *ACCEPTING_FUNC(person_t person);
 void *ERROR_FUNC(person_t person);
 
 void *LEFT_SCAN_FUNC(person_t person) {
+
+	fprintf(stderr, "entered left scan\n\n");
 
 	if (person.direction == LEFT && person.state == ACCEPTING) {
 
@@ -221,25 +223,28 @@ void *GUARD_RIGHT_LOCK_FUNC(person_t person) {
 void *PERSON_EXIT_FUNC(person_t person) {
 
 	person.state = PERSON_EXIT;
-	person.direction == NONE;
+	person.direction = NONE;
 	//sendDisplay(EXITING, person);
 	return ACCEPTING_FUNC;
 
 }
 void *ACCEPTING_FUNC(person_t person) {
 
-	if (person.direction == NONE && strcmp(person.msg, "ls")) {
+	fprintf(stderr, "entered accepting func\n\n");
 
-		return LEFT_SCAN_FUNC;
+	if (person.direction == NONE && strcmp(person.msg, "ls")) {
+		fprintf(stderr, "entered accepting func LEFT_SCAN_FUNC\n\n");
+		LEFT_SCAN_FUNC(person);
+		//return LEFT_SCAN_FUNC;
 
 	} else if (person.direction == NONE && strcmp(person.msg, "rs")) {
-
-		return RIGHT_SCAN_FUNC;
+		fprintf(stderr, "entered accepting func RIGHT_SCAN_FUNC\n\n");
+		RIGHT_SCAN_FUNC(person);
+		//return RIGHT_SCAN_FUNC;
 	}
-
 	person.direction = NONE;
 	person.state = ACCEPTING;
-	sendDisplay(ACCEPTING, person);
+	sendDisplay(IDLE_MSG, person);
 
 	return ACCEPTING_FUNC;
 }
@@ -260,7 +265,7 @@ void sendDisplay(int message, person_t person) {
 		display.person_weight = person.weight;
 	}
 
-	display.outputMessage = message;
+	display.msg = message;
 
 	if (MsgSend(display_coid, &display, sizeof(display_t), 0, 0) == -1L) {
 
@@ -269,10 +274,9 @@ void sendDisplay(int message, person_t person) {
 
 	}
 
-	if(message == EXITING){
-		fprintf(stderr,"Exiting controller\n");
+	if (message == EXITING) {
+		fprintf(stderr, "Exiting controller\n");
 	}
-
 
 }
 
@@ -317,200 +321,13 @@ int main(int argc, char* argv[]) {
 	}
 	fprintf(stderr, "The controller is running as PID: %d\n", getpid());
 
-//setAccepting Person flag to 1;
-	//acceptingPersonFlag = 1;
+	person.direction = NONE;
+	person.state = ACCEPTING;
+	display.msg = IDLE_MSG;
+	MsgSend(display_coid, &display, sizeof(display_t), NULL, 0);
 
-//Phase 2 VERSION 1
-	/*Server running forever */
-	/*while (1) {
 
-	 //get the message from des_input and print
-	 //Receive Person object from inputs
-	 rcvPID = MsgReceive(controllerCID, &person, sizeof(person), NULL);
 
-	 // validate
-	 if (rcvPID == -1) {
-	 fprintf(stderr, "\nError receiving message from Inputs. Exiting.");
-	 }
-
-	 rpyPID = MsgReply(rcvPID, EOK, &msgRply, sizeof(msgRply));
-
-	 if (rpyPID == -1) {
-	 fprintf(stderr, "\nError replying to Inputs.Exiting");
-	 exit(EXIT_FAILURE);
-	 }
-
-	 //Only for when a person hasnt entered yet, handle expected states
-	 if (person.direction == 0) {
-	 if (strcmp(person.msg, "ls") || strcmp(person.msg, "rs")) {
-	 strcpy(expectedMsg, person.msg);
-	 } else {
-	 strcpy(expectedMsg, person.msg);
-	 }
-	 }
-
-	 //Logic checks for expected state and will notify of error
-	 //if given state is not expected
-	 if (person.state != expectedState) {
-	 //unexpected state error
-	 //TODO: add print statement
-	 display.outputMessage = IE;
-	 }
-
-	 //Check the state of the recieved person obj
-	 switch (person.state) {
-
-	 case LEFT_SCAN:
-
-	 if (person.direction == 0) {
-	 person.direction = -1;
-
-	 expectedState = GUARD_LEFT_UNLOCK;
-	 display.person_id = person.person_id;
-	 display.outputMessage = ID_SCAN;
-
-	 }
-
-	 break;
-
-	 case RIGHT_SCAN:
-
-	 if (person.direction == 0) {
-	 person.direction = 1;
-
-	 expectedState = GUARD_RIGHT_UNLOCK;
-	 display.person_id = person.person_id;
-	 display.outputMessage = ID_SCAN;
-	 }
-
-	 break;
-
-	 case WEIGHT_SCALE:
-
-	 if (person.direction == -1) {
-
-	 expectedState = LEFT_CLOSED;
-
-	 } else {
-
-	 expectedState = RIGHT_CLOSED;
-
-	 }
-
-	 display.person_weight = person.weight;
-	 display.outputMessage = WEIGHED;
-
-	 break;
-
-	 case LEFT_OPEN:
-
-	 if (person.direction == -1) {
-
-	 expectedState = WEIGHT_SCALE;
-	 } else {
-	 expectedState = LEFT_CLOSED;
-	 }
-
-	 display.outputMessage = POLD;
-
-	 break;
-
-	 case RIGHT_OPEN:
-
-	 if (person.direction == -1) {
-
-	 expectedState = RIGHT_CLOSED;
-	 } else {
-	 expectedState = WEIGHT_SCALE;
-	 }
-
-	 display.outputMessage = PORD;
-
-	 break;
-
-	 case LEFT_CLOSED:
-
-	 expectedState = GUARD_LEFT_LOCK;
-	 display.outputMessage = LDC;
-
-	 break;
-
-	 case RIGHT_CLOSED:
-
-	 expectedState = GUARD_RIGHT_LOCK;
-	 display.outputMessage = RDC;
-
-	 break;
-
-	 case GUARD_LEFT_UNLOCK:
-
-	 expectedState = LEFT_OPEN;
-	 display.outputMessage = LDUG;
-
-	 break;
-
-	 case GUARD_RIGHT_UNLOCK:
-
-	 expectedState = RIGHT_OPEN;
-	 display.outputMessage = RDUG;
-
-	 break;
-
-	 case GUARD_LEFT_LOCK:
-
-	 //per entered from left, exited to the right
-	 //set direction to 0 as no one is there anymore
-
-	 if (person.direction == -1) {
-
-	 expectedState = PERSON_EXIT;
-	 } else {
-	 expectedState = GUARD_RIGHT_UNLOCK;
-	 }
-
-	 display.outputMessage = LDLG;
-
-	 break;
-
-	 case GUARD_RIGHT_LOCK:
-
-	 //per entered from right, exited to the left
-	 //set direction to 0 as no one is there anymore
-
-	 if (person.direction == -1) {
-
-	 expectedState = PERSON_EXIT;
-	 } else {
-	 expectedState = GUARD_LEFT_UNLOCK;
-	 }
-
-	 display.outputMessage = RDLG;
-
-	 break;
-
-	 case PERSON_EXIT:
-
-	 person.direction = 0;
-	 display.outputMessage = EXITING;
-
-	 break;
-
-	 }
-
-	 if (MsgSend(display_coid, &display, sizeof(display_t), 0, 0) == -1L) {
-
-	 fprintf(stderr, "MsgSend had an error\n");
-	 exit(EXIT_FAILURE);
-
-	 }
-
-	 if (display.outputMessage == EXITING) {
-
-	 printf("Exiting Controller\n");
-	 break;
-	 }
-
-	 }*/		//end of while loop
 	//PHASE II VERSION 2
 	while (1) {
 		rcvPID = MsgReceive(controllerCID, &person, sizeof(person_t), NULL);
