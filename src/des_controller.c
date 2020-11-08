@@ -54,7 +54,7 @@ void *RIGHT_SCAN_FUNC(person_t person) {
 
 		person.state = RIGHT_SCAN;
 		sendDisplay(ID_SCAN, person);
-		return GUARD_LEFT_UNLOCK_FUNC; // next state
+		return GUARD_RIGHT_UNLOCK_FUNC; // next state
 
 	}
 	return ERROR_FUNC; // next state
@@ -101,14 +101,14 @@ void *RIGHT_OPEN_FUNC(person_t person) {
 
 		person.state = RIGHT_OPEN;
 		sendDisplay(PORD, person);
-		return RIGHT_OPEN_FUNC; // next state
+		return RIGHT_CLOSED_FUNC; // next state
 
 	} else if (person.direction == RIGHT
 			&& person.state == GUARD_RIGHT_UNLOCK) {
 
 		person.state = RIGHT_OPEN;
 		sendDisplay(PORD, person);
-		return RIGHT_OPEN_FUNC; // next state
+		return WEIGHT_SCALE_FUNC; // next state
 
 	}
 
@@ -167,7 +167,7 @@ void *GUARD_LEFT_UNLOCK_FUNC(person_t person) {
 }
 void *GUARD_RIGHT_UNLOCK_FUNC(person_t person) {
 
-	if (person.direction == LEFT && person.state == GUARD_LEFT_UNLOCK) {
+	if (person.direction == LEFT && person.state == GUARD_LEFT_LOCK) {
 
 		person.state = GUARD_RIGHT_UNLOCK;
 		sendDisplay(RDUG, person);
@@ -204,13 +204,13 @@ void *GUARD_RIGHT_LOCK_FUNC(person_t person) {
 
 	if (person.direction == LEFT && person.state == RIGHT_CLOSED) {
 
-		person.state = GUARD_LEFT_LOCK;
+		person.state = GUARD_RIGHT_LOCK;
 		sendDisplay(RDLG, person);
 		return ACCEPTING_FUNC; // next state
 
 	} else if (person.direction == RIGHT && person.state == RIGHT_CLOSED) {
 
-		person.state = GUARD_LEFT_LOCK;
+		person.state = GUARD_RIGHT_LOCK;
 		sendDisplay(RDLG, person);
 		return GUARD_LEFT_UNLOCK_FUNC; // next state
 
@@ -221,6 +221,7 @@ void *GUARD_RIGHT_LOCK_FUNC(person_t person) {
 void *PERSON_EXIT_FUNC(person_t person) {
 
 	person.state = PERSON_EXIT;
+	person.direction == NONE;
 	//sendDisplay(EXITING, person);
 	return ACCEPTING_FUNC;
 
