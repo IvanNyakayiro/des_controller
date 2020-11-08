@@ -12,7 +12,7 @@
  *
  */
 
-typedef void (*StateFunc)();
+typedef void *(*StateFunc)();
 
 //states
 void *LEFT_SCAN_FUNC(person_t person);
@@ -461,7 +461,7 @@ int main(int argc, char* argv[]) {
 	//PHASE II VERSION 2
 	while (1) {
 		rcvPID = MsgReceive(controllerCID, &person, sizeof(person_t), NULL);
-		states = (StateFunc) (*states)(person);
+		states = (StateFunc)(*states)(person);
 		MsgReply(rcvPID, EOK, NULL, 0);
 
 		if (strcmp(person.msg, inMessage[EXIT]) == 0) {
