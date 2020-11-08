@@ -8,7 +8,14 @@
 #ifndef SRC_DES_H_
 #define SRC_DES_H_
 
-#define NUM_STATES 12
+typedef enum{
+	LEFT = -1,
+	NONE = 0,
+	RIGHT = 1
+}Direction;
+
+
+#define NUM_STATES 14
 typedef enum {
 	LEFT_SCAN = 0, 			// ls - PROMPT REQUIRED
 	RIGHT_SCAN = 1, 		// rs - PROMPT REQUIRED
@@ -21,7 +28,9 @@ typedef enum {
 	GUARD_RIGHT_UNLOCK = 8,	// gru
 	GUARD_LEFT_LOCK = 9,	// gll
 	GUARD_RIGHT_LOCK = 10,   // grl
-	PERSON_EXIT = 11
+	PERSON_EXIT = 11,
+	ACCEPTING = 12,
+	ERROR = 13
 } State;
 
 #define NUM_INPUTS 12
@@ -58,7 +67,7 @@ const char *inMessage[NUM_INPUTS] = {
 
 #define NUM_OUTPUTS 12	// where n equals the number of output messages from the FSM.
 typedef enum {
-//TODO :: assign an enum value, one for each output message from the FSM
+
 	ID_SCAN = 0,		// Person scanned ID
 	LDC = 1,			// Left door closed
 	RDC = 2,			//Right door closed
@@ -75,7 +84,7 @@ typedef enum {
 } Output;
 
 const char *outMessage[NUM_OUTPUTS] = {
-//TODO :: each output message. For example, "Person opened left door"
+
 			"Person scanned ID, ID: =",
 		    "Left door closed (automatically)",
 		    "Right door closed (automatically)",
@@ -95,6 +104,7 @@ const char *outMessage[NUM_OUTPUTS] = {
 struct person {
 
 	int person_id;
+	char msg[5];
 	int weight;
 	int direction; // -1 entering from left, 0 noone is entering, 1 entering from right
 	int state;
@@ -105,15 +115,17 @@ struct person {
 #define EOK 0
 
  struct display{
-//TODO :: fields for the output message and the Person. For the output message, I used an int, which
-//	is the index into the outMessages array. That way I don't pass strings in my messages.
-//	The Person field is needed, as some output message require information from the Person.
-//	Specifically, those messages that display the Person's ID and weight.
+
 int outputMessage;
 int person_id;
 int person_weight;
 
 
 } typedef display_t;
+
+
+//type def for function pointer
+
+
 
 #endif /* SRC_DES_H_ */
