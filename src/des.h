@@ -86,7 +86,7 @@ typedef enum {
 
 const char *outMessage[NUM_OUTPUTS] = {
 
-			"Person scanned ID, ID: =",
+			"Person scanned ID, ID =",
 		    "Left door closed (automatically)",
 		    "Right door closed (automatically)",
 		    "Person opened left door",
@@ -112,7 +112,6 @@ struct person {
 	int state;
 
 }typedef person_t;
-
 
 #define EOK 0
 
