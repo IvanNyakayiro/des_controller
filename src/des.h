@@ -121,7 +121,6 @@ int msg;
 int person_id;
 int person_weight;
 
-
 } typedef display_t;
 
 
