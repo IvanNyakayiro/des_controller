@@ -39,7 +39,8 @@ void *ACCEPTING_FUNC(person_t person);
 
 void *LEFT_SCAN_FUNC(person_t person) {
 
-	if (direction == LEFT && state == LEFT_SCAN) {
+	if (direction == LEFT && state == LEFT_SCAN
+			&& strcmp(person.msg, "ls") == 0) {
 
 		state = GUARD_LEFT_UNLOCK; //next state
 		sendDisplay(ID_SCAN, person);
@@ -52,7 +53,8 @@ void *LEFT_SCAN_FUNC(person_t person) {
 }
 void *RIGHT_SCAN_FUNC(person_t person) {
 
-	if (direction == RIGHT && state == RIGHT_SCAN) {
+	if (direction == RIGHT && state == RIGHT_SCAN
+			&& strcmp(person.msg, "rs") == 0) {
 
 		state = GUARD_RIGHT_UNLOCK;
 		sendDisplay(ID_SCAN, person);
@@ -64,13 +66,15 @@ void *RIGHT_SCAN_FUNC(person_t person) {
 }
 void *WEIGHT_SCALE_FUNC(person_t person) {
 
-	if (direction == RIGHT && state == WEIGHT_SCALE) {
+	if (direction == RIGHT && state == WEIGHT_SCALE
+			&& strcmp(person.msg, "ws") == 0) {
 
 		state = RIGHT_CLOSED;
 		sendDisplay(WEIGHED, person);
 		return RIGHT_CLOSED_FUNC; // next state
 
-	} else if (direction == LEFT && state == WEIGHT_SCALE) {
+	} else if (direction == LEFT && state == WEIGHT_SCALE
+			&& strcmp(person.msg, "ws") == 0) {
 
 		state = LEFT_CLOSED;
 		sendDisplay(WEIGHED, person);
@@ -82,13 +86,15 @@ void *WEIGHT_SCALE_FUNC(person_t person) {
 }
 void *LEFT_OPEN_FUNC(person_t person) {
 
-	if (direction == LEFT && state == LEFT_OPEN) {
+	if (direction == LEFT && state == LEFT_OPEN
+			&& strcmp(person.msg, "lo") == 0) {
 
 		state = WEIGHT_SCALE;
 		sendDisplay(POLD, person);
 		return WEIGHT_SCALE_FUNC; // next state
 
-	} else if (direction == RIGHT && state == LEFT_OPEN) {
+	} else if (direction == RIGHT && state == LEFT_OPEN
+			&& strcmp(person.msg, "lo") == 0) {
 
 		state = LEFT_CLOSED;
 		sendDisplay(POLD, person);
@@ -99,13 +105,15 @@ void *LEFT_OPEN_FUNC(person_t person) {
 }
 void *RIGHT_OPEN_FUNC(person_t person) {
 
-	if (direction == LEFT && state == RIGHT_OPEN) {
+	if (direction == LEFT && state == RIGHT_OPEN
+			&& strcmp(person.msg, "ro") == 0) {
 
 		state = RIGHT_CLOSED;
 		sendDisplay(PORD, person);
 		return RIGHT_CLOSED_FUNC; // next state
 
-	} else if (direction == RIGHT && state == RIGHT_OPEN) {
+	} else if (direction == RIGHT && state == RIGHT_OPEN
+			&& strcmp(person.msg, "ro") == 0) {
 
 		state = WEIGHT_SCALE;
 		sendDisplay(PORD, person);
@@ -117,13 +125,15 @@ void *RIGHT_OPEN_FUNC(person_t person) {
 }
 void *LEFT_CLOSED_FUNC(person_t person) {
 
-	if (direction == LEFT && state == LEFT_CLOSED) {
+	if (direction == LEFT && state == LEFT_CLOSED
+			&& strcmp(person.msg, "lc") == 0) {
 
 		state = GUARD_LEFT_LOCK;
 		sendDisplay(LDC, person);
 		return GUARD_LEFT_LOCK_FUNC; // next state
 
-	} else if (direction == RIGHT && state == LEFT_CLOSED) {
+	} else if (direction == RIGHT && state == LEFT_CLOSED
+			&& strcmp(person.msg, "lc") == 0) {
 
 		state = GUARD_LEFT_LOCK;
 		sendDisplay(LDC, person);
@@ -134,13 +144,15 @@ void *LEFT_CLOSED_FUNC(person_t person) {
 }
 void *RIGHT_CLOSED_FUNC(person_t person) {
 
-	if (direction == LEFT && state == RIGHT_CLOSED) {
+	if (direction == LEFT && state == RIGHT_CLOSED
+			&& strcmp(person.msg, "rc") == 0) {
 
 		state = GUARD_RIGHT_LOCK;
 		sendDisplay(RDC, person);
 		return GUARD_RIGHT_LOCK_FUNC; // next state
 
-	} else if (direction == RIGHT && state == RIGHT_CLOSED) {
+	} else if (direction == RIGHT && state == RIGHT_CLOSED
+			&& strcmp(person.msg, "rc") == 0) {
 
 		state = GUARD_RIGHT_LOCK;
 		sendDisplay(RDC, person);
@@ -151,13 +163,15 @@ void *RIGHT_CLOSED_FUNC(person_t person) {
 }
 void *GUARD_LEFT_UNLOCK_FUNC(person_t person) {
 
-	if (direction == LEFT && state == GUARD_LEFT_UNLOCK) {
+	if (direction == LEFT && state == GUARD_LEFT_UNLOCK
+			&& strcmp(person.msg, "glu") == 0) {
 
 		state = LEFT_OPEN;
 		sendDisplay(LDUG, person);
 		return LEFT_OPEN_FUNC; // next state
 
-	} else if (direction == RIGHT && state == GUARD_LEFT_UNLOCK) {
+	} else if (direction == RIGHT && state == GUARD_LEFT_UNLOCK
+			&& strcmp(person.msg, "glu") == 0) {
 
 		state = LEFT_OPEN;
 		sendDisplay(LDUG, person);
@@ -168,13 +182,15 @@ void *GUARD_LEFT_UNLOCK_FUNC(person_t person) {
 }
 void *GUARD_RIGHT_UNLOCK_FUNC(person_t person) {
 
-	if (direction == LEFT && state == GUARD_RIGHT_UNLOCK) {
+	if (direction == LEFT && state == GUARD_RIGHT_UNLOCK
+			&& strcmp(person.msg, "gru") == 0) {
 
 		state = RIGHT_OPEN;
 		sendDisplay(RDUG, person);
 		return RIGHT_OPEN_FUNC; // next state
 
-	} else if (direction == RIGHT && state == GUARD_RIGHT_UNLOCK) {
+	} else if (direction == RIGHT && state == GUARD_RIGHT_UNLOCK
+			&& strcmp(person.msg, "gru") == 0) {
 
 		state = RIGHT_OPEN;
 		sendDisplay(RDUG, person);
@@ -185,13 +201,15 @@ void *GUARD_RIGHT_UNLOCK_FUNC(person_t person) {
 }
 void *GUARD_LEFT_LOCK_FUNC(person_t person) {
 
-	if (direction == LEFT && state == GUARD_LEFT_LOCK) {
+	if (direction == LEFT && state == GUARD_LEFT_LOCK
+			&& strcmp(person.msg, "gll") == 0) {
 
 		state = GUARD_RIGHT_UNLOCK;
 		sendDisplay(LDLG, person);
 		return GUARD_RIGHT_UNLOCK_FUNC; // next state
 
-	} else if (direction == RIGHT && state == GUARD_LEFT_LOCK) {
+	} else if (direction == RIGHT && state == GUARD_LEFT_LOCK
+			&& strcmp(person.msg, "gll") == 0) {
 
 		state = ACCEPTING;
 		sendDisplay(LDLG, person);
@@ -203,13 +221,15 @@ void *GUARD_LEFT_LOCK_FUNC(person_t person) {
 }
 void *GUARD_RIGHT_LOCK_FUNC(person_t person) {
 
-	if (direction == LEFT && state == GUARD_RIGHT_LOCK) {
+	if (direction == LEFT && state == GUARD_RIGHT_LOCK
+			&& strcmp(person.msg, "grl") == 0) {
 
 		state = ACCEPTING;
 		sendDisplay(RDLG, person);
 		return ACCEPTING_FUNC(person); // next state
 
-	} else if (direction == RIGHT && state == GUARD_RIGHT_LOCK) {
+	} else if (direction == RIGHT && state == GUARD_RIGHT_LOCK
+			&& strcmp(person.msg, "grl") == 0) {
 
 		state = GUARD_LEFT_UNLOCK;
 		sendDisplay(RDLG, person);
@@ -237,9 +257,10 @@ void *ACCEPTING_FUNC(person_t person) {
 	}
 
 	direction = NONE;
-	//state = ACCEPTING;
-	sendDisplay(IDLE_MSG, person);
 
+	if (strcmp(person.msg, "exit") != 0) {
+		sendDisplay(IDLE_MSG, person);
+	}
 	return ACCEPTING_FUNC;
 }
 
@@ -263,10 +284,9 @@ void sendDisplay(int message, person_t person) {
 	}
 
 	if (message == EXITING) {
+		sleep(1);
 		fprintf(stderr, "Exiting controller\n");
 	}
-
-	sleep(3);
 
 }
 

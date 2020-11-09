@@ -15,7 +15,7 @@ typedef enum{
 }Direction;
 
 
-#define NUM_STATES 14
+#define NUM_STATES 12
 typedef enum {
 	LEFT_SCAN = 0, 			// ls - PROMPT REQUIRED
 	RIGHT_SCAN = 1, 		// rs - PROMPT REQUIRED
@@ -28,9 +28,7 @@ typedef enum {
 	GUARD_RIGHT_UNLOCK = 8,	// gru
 	GUARD_LEFT_LOCK = 9,	// gll
 	GUARD_RIGHT_LOCK = 10,   // grl
-	PERSON_EXIT = 11,
-	ACCEPTING = 12,
-	ERROR = 13
+	ACCEPTING = 11,
 } State;
 
 #define NUM_INPUTS 12
@@ -65,7 +63,7 @@ const char *inMessage[NUM_INPUTS] = {
 		"exit" 		//exit
 		};
 
-#define NUM_OUTPUTS 13	// where n equals the number of output messages from the FSM.
+#define NUM_OUTPUTS 12	// where n equals the number of output messages from the FSM.
 typedef enum {
 
 	ID_SCAN = 0,		// Person scanned ID
@@ -78,9 +76,8 @@ typedef enum {
 	RDLG = 7,			//Right door locked by Guard
 	LDUG = 8,		  //Left door unlocked by Guard
 	RDUG = 9,			//Right door unlocked by Guard
-	IE = 10,		// "Incorrect event"
-	EXITING = 11,	//Exiting
-	IDLE_MSG = 12
+	EXITING = 10,	//Exiting
+	IDLE_MSG = 11
 
 } Output;
 
@@ -96,7 +93,6 @@ const char *outMessage[NUM_OUTPUTS] = {
 		    "Right door locked by Guard",
 		    "Left door unlocked by Guard",
 		    "Right door unlocked by Guard",
-		    "Incorrect event",
 		    "Exit Display",
 			"Waiting for Person..."
 
